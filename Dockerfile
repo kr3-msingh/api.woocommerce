@@ -8,11 +8,15 @@ RUN npm ci
 COPY tsconfig.json ./
 COPY src ./src
 COPY public ./public
+COPY scripts ./scripts
 RUN npm run build
 
 # ---- production deps -----------------------------------------------------
 FROM node:22-alpine AS deps
 WORKDIR /app
+# Only package*.json is copied, so the repo's .npmrc (which forces devDependencies
+# on for shared hosts that set NODE_ENV=production) does not apply here and the
+# runtime image stays lean.
 COPY package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 

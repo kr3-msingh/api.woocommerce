@@ -390,6 +390,22 @@ older commit that still had `rimraf` as a build dependency; pull and reinstall:
 git pull && rm -rf node_modules package-lock.json && npm install && npm run build
 ```
 
+**`sh: tsc: command not found` / `ERROR: Failed to build the application`**
+`npm install` skipped devDependencies, so TypeScript was never installed. This happens when
+`NODE_ENV=production` is set during install — which cPanel and Plesk do by default. The giveaway is
+the package count: a correct install is ~103 packages, a dev-less one ~82.
+
+The repo ships an `.npmrc` containing `include=dev`, which forces them in regardless of `NODE_ENV`.
+If you hit this, you are on an older commit — pull and reinstall:
+
+```bash
+git pull && rm -rf node_modules && npm install && npm run build
+```
+
+This app is compiled from source on the host, so TypeScript genuinely has to be there at build time.
+The Docker image is unaffected: its dependency stage copies only `package*.json`, so `.npmrc` is not
+present when it runs `npm ci --omit=dev`, and the runtime image stays lean.
+
 **`npm notice New major version of npm available`**
 Cosmetic. Nothing here needs npm 12; npm 10 is fine.
 
