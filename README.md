@@ -31,6 +31,10 @@ through rather than argue about.
 
 ## Quick start
 
+**Requires Node 18.17 or newer.** Verified on Node 18.20.8 — the version most shared hosts still
+ship — as well as on current releases. Nothing in the dependency tree requires Node 20+, and the
+build uses only Node built-ins (no `rimraf`, no native modules, no toolchain).
+
 ```bash
 npm install
 cp .env.example .env      # then fill in your store URL + API keys
@@ -220,7 +224,9 @@ src/
 public/index.html                  Landing page (API vs MCP)
 scripts/
 ├── export-spec.ts                 npm run spec:json | spec:yaml
-└── validate-spec.ts               npm run spec:validate
+├── validate-spec.ts               npm run spec:validate
+├── clean.mjs                      Removes dist/ (replaces rimraf)
+└── copy-assets.mjs                Copies public/ into dist/
 ```
 
 ### Scripts
@@ -228,6 +234,7 @@ scripts/
 | Command | Does |
 | --- | --- |
 | `npm run dev` | Watch mode via `tsx` |
+| `npm run clean` | Remove `dist/` |
 | `npm run build` | Compile to `dist/` and copy `public/` |
 | `npm start` | Run the build |
 | `npm run typecheck` | `tsc --noEmit` |
@@ -348,6 +355,17 @@ Permalinks are set to "Plain". WooCommerce's REST API needs pretty permalinks �
 **502 / 504 from the gateway**
 The store is unreachable from the server, or slower than `WOO_TIMEOUT_MS`. Check with
 `curl -u ck:cs https://your-store.com/wp-json/wc/v3/system_status` from the same host.
+
+**`npm warn EBADENGINE ... required: { node: '20 || >=22' }` during install**
+Should not happen on a current checkout — the tree is Node 18 clean. If you see it, you are on an
+older commit that still had `rimraf` as a build dependency; pull and reinstall:
+
+```bash
+git pull && rm -rf node_modules package-lock.json && npm install && npm run build
+```
+
+**`npm notice New major version of npm available`**
+Cosmetic. Nothing here needs npm 12; npm 10 is fine.
 
 **Swagger UI renders blank**
 A reverse proxy is rewriting or blocking `/docs/swagger-ui-bundle.js`, or a stricter CSP than this
