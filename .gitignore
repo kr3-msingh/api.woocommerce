@@ -8,3 +8,6 @@ npm-debug.log*
 coverage/
 openapi.json
 openapi.yaml
+
+# Visible copy of .env for uploading (rename to .env on the server)
+env-upload.txt
