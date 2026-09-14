@@ -2,7 +2,27 @@ import fs from 'node:fs';
 import path from 'node:path';
 import dotenv from 'dotenv';
 
-dotenv.config();
+/**
+ * Load `.env` from the project root rather than `process.cwd()`.
+ *
+ * Passenger-based hosts (cPanel, Plesk) do not guarantee that the working
+ * directory is the application root, so the default dotenv lookup can silently
+ * find nothing while a correctly-placed `.env` sits right there. Resolving from
+ * this file's location removes that failure mode; cwd is kept as a fallback for
+ * unusual layouts. Real environment variables always win — dotenv never
+ * overwrites them — so panel-configured variables take precedence.
+ */
+const envCandidates = [
+  path.resolve(__dirname, '..', '.env'), // project root, from src/ or dist/
+  path.resolve(process.cwd(), '.env'),
+];
+
+for (const candidate of envCandidates) {
+  if (fs.existsSync(candidate)) {
+    dotenv.config({ path: candidate });
+    break;
+  }
+}
 
 const bool = (value: string | undefined, fallback: boolean): boolean => {
   if (value === undefined || value.trim() === '') return fallback;

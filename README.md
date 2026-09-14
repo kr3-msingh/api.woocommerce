@@ -150,9 +150,12 @@ exists for exactly this.
    npm install
    npm run build
    ```
-4. Add the environment variables from `.env.example` in the panel's variables section (or upload a
-   `.env` file).
-5. Restart the application.
+4. Add the environment variables from `.env.example` in the panel's **Environment variables**
+   section. Uploading a `.env` to the application root also works — the app resolves it relative to
+   its own location, not the working directory, because Passenger does not guarantee the two match.
+   Real environment variables win over `.env` either way.
+5. Restart the application, then check `https://your-app-url/healthz` — `gateway.configured` should
+   be `true`.
 
 `app.js` fails loudly if `dist/` is missing, so a forgotten build shows up as a clear message rather
 than a blank 503.
@@ -330,7 +333,30 @@ the MCP server and every model that touches your store has to learn all 133 oper
 ## Troubleshooting
 
 **"Try it out" returns 503 `proxy_not_configured`**
-`WOO_STORE_URL`, `WOO_CONSUMER_KEY` or `WOO_CONSUMER_SECRET` is missing. Restart after editing `.env`.
+The app is running fine — it just has no store credentials. `.env` is gitignored, so it is never in a
+clone or a deploy; you have to supply the values on the host.
+
+Check what the app actually sees:
+
+```bash
+curl https://your-app-url/healthz
+```
+
+`"configured": false` means `WOO_STORE_URL`, `WOO_CONSUMER_KEY` or `WOO_CONSUMER_SECRET` is missing.
+Set them either way — real environment variables take precedence over `.env`:
+
+- **cPanel / Plesk:** *Setup Node.js App* → **Environment variables** → add each one → **Save** →
+  **Restart**. Preferred: the values are not sitting in a file under the web root.
+- **`.env` file:** upload it to the application root (next to `package.json`), then restart.
+
+Note this is a JSON 503 from `/api/wc/*`. A full-page **503 Service Unavailable** from the host is a
+different problem — see below.
+
+**Host returns a 503 / 502 page for every route, including `/docs`**
+The app never started; this is not a credentials problem — it boots and serves documentation fine
+with no `.env` at all. Usual causes: `npm run build` was never run (`app.js` says so explicitly in
+the Passenger log), the Node version was changed without reinstalling, or the startup file is not set
+to `app.js`. Check the panel's stderr log first.
 
 **405 `proxy_read_only`**
 Working as intended. Set `PROXY_ALLOW_WRITES=true` if you really want the demo to mutate the store.
