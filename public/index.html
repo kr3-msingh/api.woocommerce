@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WooCommerce REST API — OpenAPI Explorer</title>
+<meta name="description" content="A complete OpenAPI 3.0 specification and Swagger UI for the WooCommerce REST API, built as the API half of an API-vs-MCP demo." />
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="%237f54b3"/><text x="16" y="22" font-size="17" font-family="sans-serif" fill="white" text-anchor="middle">W</text></svg>' />
+<style>
+  :root {
+    --purple: #7f54b3;
+    --purple-soft: #f3edfa;
+    --teal: #0f7b6c;
+    --teal-soft: #e6f4f1;
+    --ink: #16181d;
+    --ink-2: #454a54;
+    --ink-3: #767c8a;
+    --line: #e5e7ec;
+    --bg: #ffffff;
+    --bg-2: #f8f9fb;
+    --code-bg: #1c2030;
+    --code-ink: #dfe3ee;
+    --radius: 12px;
+    --maxw: 1080px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --purple: #a986dd; --purple-soft: #241b33; --teal: #5ec7b4; --teal-soft: #142826;
+      --ink: #eef0f5; --ink-2: #b9bfcc; --ink-3: #868d9e; --line: #2a2f3c;
+      --bg: #0e1016; --bg-2: #14171f; --code-bg: #090b11; --code-ink: #dfe3ee;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  code, pre, .mono { font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace; }
+  a { color: var(--purple); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 22px; }
+  .rule { border: 0; border-top: 1px solid var(--line); margin: 0; }
+
+  /* ---------------------------------------------------------------- hero -- */
+  header.hero { padding: 64px 0 48px; border-bottom: 1px solid var(--line); background: var(--bg-2); }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;
+    letter-spacing: .09em; text-transform: uppercase; color: var(--purple);
+    background: var(--purple-soft); padding: 6px 12px; border-radius: 999px;
+  }
+  h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.12; letter-spacing: -0.025em; margin: 18px 0 14px; }
+  .lede { font-size: clamp(16px, 2.2vw, 19px); color: var(--ink-2); max-width: 65ch; margin: 0 0 28px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 9px;
+    font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--line);
+    color: var(--ink); background: var(--bg); transition: transform .12s ease, border-color .12s ease;
+  }
+  .btn:hover { transform: translateY(-1px); border-color: var(--purple); }
+  .btn.primary { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .btn.primary:hover { filter: brightness(1.07); }
+
+  /* -------------------------------------------------------------- status -- */
+  .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 34px; }
+  .stat { background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+  .stat .k { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; }
+  .stat .v { font-size: 22px; font-weight: 700; margin-top: 5px; letter-spacing: -0.01em; }
+  .stat .v.small { font-size: 15px; font-weight: 600; word-break: break-word; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: middle; }
+  .dot.on { background: #16a34a; } .dot.warn { background: #d97706; } .dot.off { background: #9aa1b1; }
+
+  /* ------------------------------------------------------------ sections -- */
+  section { padding: 58px 0; }
+  section.alt { background: var(--bg-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  h2 { font-size: clamp(23px, 3.3vw, 30px); letter-spacing: -0.02em; margin: 0 0 10px; }
+  h3 { font-size: 17px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--ink-2); max-width: 68ch; margin: 0 0 30px; }
+  p { margin: 0 0 14px; }
+
+  /* ----------------------------------------------------------- compare  -- */
+  .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg); overflow: hidden; }
+  .card > header { padding: 16px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .card > header .tag {
+    font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    padding: 4px 9px; border-radius: 6px;
+  }
+  .card.api > header .tag { background: var(--purple-soft); color: var(--purple); }
+  .card.mcp > header .tag { background: var(--teal-soft); color: var(--teal); }
+  .card > header h3 { margin: 0; }
+  .card .body { padding: 18px 20px 20px; }
+  .card ul { margin: 0; padding-left: 19px; color: var(--ink-2); }
+  .card li { margin-bottom: 9px; }
+  .card li strong { color: var(--ink); }
+
+  table.matrix { width: 100%; border-collapse: collapse; font-size: 15px; }
+  table.matrix th, table.matrix td { text-align: left; padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.matrix thead th { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+  table.matrix tbody th { font-weight: 600; width: 22%; color: var(--ink); }
+  table.matrix td { color: var(--ink-2); }
+  .scroller { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* ---------------------------------------------------------------- code -- */
+  pre {
+    background: var(--code-bg); color: var(--code-ink); padding: 16px 18px; border-radius: 10px;
+    overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 0;
+  }
+  pre .c { color: #7f8aa8; } pre .s { color: #9fd3a0; } pre .k { color: #d5a6f0; } pre .n { color: #f0c987; }
+  .panelgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  /* --------------------------------------------------------------- lists -- */
+  .groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; }
+  .group { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--bg); text-decoration: none; color: inherit; display: block; }
+  .group:hover { border-color: var(--purple); }
+  .group b { display: block; font-size: 15px; margin-bottom: 3px; }
+  .group span { font-size: 13px; color: var(--ink-3); }
+
+  ol.steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+  ol.steps li { counter-increment: s; position: relative; padding-left: 40px; margin-bottom: 20px; }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 1px; width: 26px; height: 26px;
+    border-radius: 50%; background: var(--purple); color: #fff;
+    font-size: 13px; font-weight: 700; display: grid; place-items: center;
+  }
+
+  footer { padding: 36px 0 52px; color: var(--ink-3); font-size: 14px; border-top: 1px solid var(--line); }
+  footer a { color: var(--ink-2); }
+
+  @media (max-width: 760px) {
+    .versus, .panelgrid { grid-template-columns: 1fr; }
+    section { padding: 42px 0; }
+    header.hero { padding: 44px 0 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="eyebrow">OpenAPI 3.0 · Node.js · TypeScript</span>
+    <h1>The WooCommerce REST API,<br />documented properly.</h1>
+    <p class="lede">
+      A hand-written OpenAPI specification for WooCommerce <code>wc/v3</code> — every resource, filter and
+      error envelope — served through Swagger UI with a live gateway so <em>Try it out</em> actually reaches
+      a real store. This is the <strong>API half</strong> of an API-vs-MCP comparison.
+    </p>
+    <div class="actions">
+      <a class="btn primary" href="/docs">Open Swagger UI →</a>
+      <a class="btn" href="/openapi.json">openapi.json</a>
+      <a class="btn" href="/openapi.yaml">openapi.yaml</a>
+      <a class="btn" href="/healthz">Health</a>
+    </div>
+
+    <div class="status" id="status">
+      <div class="stat"><div class="k">Operations</div><div class="v" id="s-ops">—</div></div>
+      <div class="stat"><div class="k">Spec version</div><div class="v" id="s-spec">—</div></div>
+      <div class="stat"><div class="k">Gateway</div><div class="v small" id="s-gw"><span class="dot off"></span>checking…</div></div>
+      <div class="stat"><div class="k">Upstream store</div><div class="v small" id="s-up">—</div></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Two interfaces over one store</h2>
+    <p class="sub">
+      The specification you can browse here and the companion MCP server talk to the same WooCommerce
+      install and issue the same HTTP requests. They differ in who the interface was designed for.
+    </p>
+
+    <div class="versus">
+      <article class="card api">
+        <header><span class="tag">REST + OpenAPI</span><h3>Written for programmers</h3></header>
+        <div class="body">
+          <ul>
+            <li><strong>Resource-shaped.</strong> 133 operations across products, orders, customers, coupons, reports and settings. Every field, every filter.</li>
+            <li><strong>Exhaustive by design.</strong> The spec's job is to leave nothing out, so the caller can build anything.</li>
+            <li><strong>Composition is the caller's problem.</strong> "Which unfulfilled orders contain a low-stock item" is three endpoints and a join you write yourself.</li>
+            <li><strong>Stable and versioned.</strong> A contract you can generate typed clients from and pin in CI.</li>
+            <li><strong>Errors are codes.</strong> <code>403 woocommerce_rest_cannot_create</code> means something to a developer who has read the docs.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card mcp">
+        <header><span class="tag">MCP server</span><h3>Written for models</h3></header>
+        <div class="body">
+          <ul>
+            <li><strong>Intent-shaped.</strong> A dozen tools — <code>find_orders</code>, <code>check_stock</code>, <code>refund_order</code> — instead of 133 endpoints.</li>
+            <li><strong>Selective by design.</strong> Each tool exposes the handful of arguments that matter and hides the rest, because a large surface is a liability to a model, not a feature.</li>
+            <li><strong>Composition lives server-side.</strong> One tool call can fan out to several REST calls and return the joined answer.</li>
+            <li><strong>Descriptions are the interface.</strong> Tool text is read at runtime by a model with no prior context, so it must explain <em>when</em> to use the tool, not just what it does.</li>
+            <li><strong>Errors are sentences.</strong> "That key is read-only, so I can't create products" is recoverable; a status code is not.</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>Same question, two shapes</h2>
+    <p class="sub">
+      <em>"Which orders from the last week are still unfulfilled, and what are they worth?"</em>
+    </p>
+
+    <div class="panelgrid">
+      <div class="card api">
+        <header><span class="tag">REST</span><h3>You orchestrate</h3></header>
+        <div class="body">
+<pre><span class="c"># 1. fetch the candidate orders</span>
+curl -u <span class="s">"$CK:$CS"</span> \
+  <span class="s">"$STORE/wp-json/wc/v3/orders?status=processing,on-hold\
+&amp;after=2026-09-07T00:00:00&amp;per_page=100"</span>
+
+<span class="c"># 2. page until X-WP-TotalPages is exhausted</span>
+<span class="c"># 3. parse `total` as decimal, not float</span>
+<span class="c"># 4. sum, group, decide what "unfulfilled" means</span>
+<span class="c"># 5. handle 401 vs 403 vs 400 separately</span></pre>
+          <p style="margin-top:14px;color:var(--ink-3);font-size:14px;">
+            Five decisions before you see an answer — and each one is a place to be wrong.
+          </p>
+        </div>
+      </div>
+
+      <div class="card mcp">
+        <header><span class="tag">MCP</span><h3>The server orchestrates</h3></header>
+        <div class="body">
+<pre><span class="c">// one tool call from the model</span>
+{
+  <span class="k">"tool"</span>: <span class="s">"find_orders"</span>,
+  <span class="k">"arguments"</span>: {
+    <span class="k">"status"</span>: <span class="s">"unfulfilled"</span>,
+    <span class="k">"since"</span>: <span class="s">"7d"</span>,
+    <span class="k">"include_totals"</span>: <span class="n">true</span>
+  }
+}
+
+<span class="c">// -> 23 orders, ₹1,84,320 outstanding,</span>
+<span class="c">//    oldest 6 days, already paginated and summed</span></pre>
+          <p style="margin-top:14px;color:var(--ink-3);font-size:14px;">
+            The pagination, the decimal handling and the definition of "unfulfilled" live in the server.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Where each one wins</h2>
+    <p class="sub">Not a competition. They solve adjacent problems, and most serious systems end up with both.</p>
+    <div class="scroller">
+      <table class="matrix">
+        <thead>
+          <tr><th></th><th>REST + OpenAPI</th><th>MCP server</th></tr>
+        </thead>
+        <tbody>
+          <tr><th>Consumer</th><td>A developer writing code ahead of time</td><td>A model choosing at runtime</td></tr>
+          <tr><th>Surface</th><td>Broad — expose everything, hide nothing</td><td>Narrow — expose intents, hide plumbing</td></tr>
+          <tr><th>Discovery</th><td>Read the spec, generate a client, ship</td><td>List tools over the protocol, mid-conversation</td></tr>
+          <tr><th>Auth</th><td>Consumer key/secret held by the client</td><td>Held by the server; the model never sees it</td></tr>
+          <tr><th>Errors</th><td>Status codes and machine-readable slugs</td><td>Prose a model can actually recover from</td></tr>
+          <tr><th>Batching</th><td><code>/batch</code>, non-transactional, caller-driven</td><td>Server-side, one tool call, joined result</td></tr>
+          <tr><th>Best at</th><td>Integrations, ETL, typed clients, contract tests</td><td>Assistants, ops copilots, natural-language workflows</td></tr>
+          <tr><th>Worst at</th><td>Being handed to something that cannot read docs</td><td>Anything needing the full, unabridged surface</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:26px;color:var(--ink-2);max-width:68ch;">
+      The honest summary: <strong>MCP is not a replacement for a REST API — it is a curated interface layer above one.</strong>
+      This spec is what you build the MCP server <em>on top of</em>. Skip the API and the MCP server has nothing to call;
+      skip the MCP server and every model that touches your store has to learn all 133 operations first.
+    </p>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2>What's documented</h2>
+    <p class="sub">Every group below is browsable, filterable and callable in the explorer.</p>
+    <div class="groups">
+      <a class="group" href="/docs#/Products"><b>Products</b><span>Catalogue, stock, pricing, batch</span></a>
+      <a class="group" href="/docs#/Product%20variations"><b>Variations</b><span>Variable-product children</span></a>
+      <a class="group" href="/docs#/Product%20categories"><b>Categories &amp; tags</b><span>Catalogue taxonomy</span></a>
+      <a class="group" href="/docs#/Product%20attributes"><b>Attributes</b><span>Global attributes and terms</span></a>
+      <a class="group" href="/docs#/Product%20reviews"><b>Reviews</b><span>Ratings and moderation</span></a>
+      <a class="group" href="/docs#/Orders"><b>Orders</b><span>Line items, totals, statuses</span></a>
+      <a class="group" href="/docs#/Order%20refunds"><b>Refunds &amp; notes</b><span>Post-purchase operations</span></a>
+      <a class="group" href="/docs#/Customers"><b>Customers</b><span>Users, addresses, downloads</span></a>
+      <a class="group" href="/docs#/Coupons"><b>Coupons</b><span>Discounts and restrictions</span></a>
+      <a class="group" href="/docs#/Reports"><b>Reports</b><span>Sales, top sellers, totals</span></a>
+      <a class="group" href="/docs#/Tax%20rates"><b>Taxes</b><span>Rates and classes</span></a>
+      <a class="group" href="/docs#/Shipping"><b>Shipping</b><span>Zones, locations, methods</span></a>
+      <a class="group" href="/docs#/Payment%20gateways"><b>Payments</b><span>Gateways and settings</span></a>
+      <a class="group" href="/docs#/Webhooks"><b>Webhooks</b><span>Push instead of poll</span></a>
+      <a class="group" href="/docs#/System%20status"><b>System status</b><span>Diagnostics and tools</span></a>
+      <a class="group" href="/docs#/Data"><b>Reference data</b><span>Countries, currencies</span></a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Point it at your store</h2>
+    <p class="sub">Four steps. The gateway ships read-only, so you can demo against production without holding your breath.</p>
+    <ol class="steps">
+      <li>
+        <h3>Create REST API keys</h3>
+        In wp-admin: <em>WooCommerce → Settings → Advanced → REST API → Add key</em>. Choose <strong>Read</strong>
+        permission for a demo. You get a <code>ck_…</code> and a <code>cs_…</code>, shown once.
+      </li>
+      <li>
+        <h3>Configure this app</h3>
+        <pre><span class="c">cp .env.example .env</span>
+WOO_STORE_URL=<span class="s">https://your-store.com</span>
+WOO_CONSUMER_KEY=<span class="s">ck_…</span>
+WOO_CONSUMER_SECRET=<span class="s">cs_…</span></pre>
+      </li>
+      <li>
+        <h3>Run it</h3>
+        <pre>npm install &amp;&amp; npm run build &amp;&amp; npm start</pre>
+      </li>
+      <li>
+        <h3>Try it out</h3>
+        Open <a href="/docs">/docs</a>, pick <code>listOrders</code>, hit <strong>Execute</strong>. The call goes through this
+        app's gateway, which attaches your credentials server-side — they never reach the browser.
+      </li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Built with Node.js, TypeScript, Express and Swagger UI ·
+    <a href="/openapi.json">Specification</a> ·
+    <a href="https://woocommerce.github.io/woocommerce-rest-api-docs/">Official WooCommerce REST docs</a> ·
+    <a href="https://modelcontextprotocol.io">Model Context Protocol</a>
+  </div>
+</footer>
+
+<script>
+  (async function () {
+    var set = function (id, html) { var el = document.getElementById(id); if (el) el.innerHTML = html; };
+    try {
+      var res = await fetch('/healthz', { headers: { accept: 'application/json' } });
+      var h = await res.json();
+
+      set('s-ops', h.spec.operations + ' <span style="font-size:13px;font-weight:500;color:var(--ink-3)">documented</span>');
+      set('s-spec', 'OpenAPI ' + h.spec.openapi);
+
+      if (!h.gateway.enabled) {
+        set('s-gw', '<span class="dot off"></span>Disabled (docs only)');
+        set('s-up', '—');
+      } else if (!h.gateway.configured) {
+        set('s-gw', '<span class="dot warn"></span>No store configured');
+        set('s-up', 'Set WOO_STORE_URL in .env');
+      } else {
+        set('s-gw', '<span class="dot on"></span>Live · ' + (h.gateway.writes_allowed ? 'read + write' : 'read-only'));
+        set('s-up', h.gateway.upstream.replace(/^https?:\/\//, ''));
+      }
+    } catch (err) {
+      set('s-gw', '<span class="dot off"></span>Unavailable');
+    }
+  })();
+</script>
+
+</body>
+</html>
